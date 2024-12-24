@@ -230,15 +230,15 @@ class MultiInstall(QWidget, Ui_Form):
             airtestscriptname = self.airtestmodel.data(self.airtestmodel.index(index.row(), 0), Qt.DisplayRole)
             selected_airtestscriptname.append(airtestscriptname)
         return selected_airtestscriptname
-    def test(self):
-        script_path = 'D:\\qa_tools\\multi_install-main\\scripts\\untitled.air'
-        device = 'Android:///'
-        self.run_airtest_script(script_path, device)
-        templist = self.selected_airtestscripts()
-        scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
-        for item in templist:
-
-            item_path = os.path.join(scripts_dir, item)
+    # def test(self):
+    #     script_path = 'D:\\qa_tools\\multi_install-main\\scripts\\untitled.air'
+    #     device = 'Android:///'
+    #     self.run_airtest_script(script_path, device)
+    #     templist = self.selected_airtestscripts()
+    #     scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
+    #     for item in templist:
+    #
+    #         item_path = os.path.join(scripts_dir, item)
 
     def run_airtest_script(self, script_path, device):
         """
