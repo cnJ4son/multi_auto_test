@@ -1,8 +1,8 @@
-# multi_install
+# multi_auto_test
 
 ## 简介
 
-`multi_install`是一个使用PyQt5构建图形用户界面（GUI）的Python应用程序，它可以帮助您快速在多个设备上同时安装APK文件。
+`multi_auto_test`是一个使用PyQt5构建图形用户界面（GUI）的Python应用程序，它可以帮助您快速在多个设备上同时安装APK文件,并多机器执行自动化脚本。
 
 ## 快速开始
 
@@ -17,12 +17,13 @@
 1. 克隆仓库到本地
 
    ```
-   git clone https://github.com/Qiuyang-Pan/multi_install.git
+   git clone https://github.com/cnJ4son/multi_auto_test.git
+   
    ```
 2. 进入项目目录
 
    ```
-   cd multi_install
+   cd multi_auto_test
    ```
 3. 创建虚拟环境并激活（推荐）
 
