@@ -49,10 +49,9 @@ class MultiInstall(QWidget, Ui_Form):
     def show_dialog(self):
         self.dialog_window = MyDialog(self)
         self.dialog_window.show()
-        self.test()
 
     def show_apk(self):
-        print('freshapk')
+        self.apk_model.clear()
         # 假设当前脚本位于项目根目录下
         # 获取当前脚本的目录（项目根目录）
         project_root = os.path.dirname(os.path.abspath(__file__))
@@ -66,11 +65,8 @@ class MultiInstall(QWidget, Ui_Form):
         # 打印所有APK文件的文件名
         for apk_file in apk_files:
             print(apk_file)
-
-        # 利用QStringListModel来展示文件名
-        model = QStringListModel()
-        model.setStringList(apk_files)
-        self.apkList.setModel(model)
+            # 利用QStringListModel来展示文件名
+            self.apk_model.appendRow(QStandardItem(apk_file))
 
         self.output.appendPlainText("获取apk成功！共获取到 {} 个apk！".format(len(apk_files)))
 
@@ -86,8 +82,11 @@ class MultiInstall(QWidget, Ui_Form):
         self.devices_model = QStandardItemModel()
         self.devices_model.setHorizontalHeaderLabels(["device_id", "device_name"])
         self.tableView.setModel(self.devices_model)
-        self.airtestmodel= QStandardItemModel()
+        self.airtestmodel = QStandardItemModel()
         self.airtestscipstlistView.setModel(self.airtestmodel)
+        self.apk_model = QStandardItemModel()
+        self.apkList.setModel(self.apk_model)
+
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         # 当拖拽进入窗口时调用
@@ -112,7 +111,7 @@ class MultiInstall(QWidget, Ui_Form):
                 self.filePath.setPlainText(file_path)
 
     def show_devices(self):
-        self.init_model()
+        self.devices_model.clear()
         # self.output.clear()
         self.get_devices_info()
         if self.devices_info:
@@ -215,6 +214,7 @@ class MultiInstall(QWidget, Ui_Form):
 
     # 刷新自动化脚本
     def show_airtestscripst(self):
+        self.airtestmodel.clear()
         # 假设scripts文件夹位于项目根目录下
         scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts_list = os.listdir(scripts_dir)
@@ -226,11 +226,10 @@ class MultiInstall(QWidget, Ui_Form):
                 # 添加文件夹名到模型
                 folder_item = QStandardItem(item)
                 self.airtestmodel.appendRow(folder_item)
-        self.airtestscipstlistView.setModel(self.airtestmodel)
 
         self.output.appendPlainText("获取脚本成功！共获取到 {} 个脚本！".format(len(scripts_list)))
 
-    #选择自动化脚本
+    # 选择自动化脚本
     def selected_airtestscripts(self):
 
         # 获取选择的设备id
@@ -242,6 +241,7 @@ class MultiInstall(QWidget, Ui_Form):
             airtestscriptname = self.airtestmodel.data(self.airtestmodel.index(index.row(), 0), Qt.DisplayRole)
             selected_airtestscriptname.append(airtestscriptname)
         return selected_airtestscriptname
+
     # def test(self):
     #     script_path = 'D:\\qa_tools\\multi_install-main\\scripts\\untitled.air'
     #     device = 'Android:///'
@@ -309,7 +309,6 @@ class MultiInstall(QWidget, Ui_Form):
             QMessageBox.warning(self, "警告", "没有选择脚本！")
 
 
-
 class InstallThread(QThread):
     update_text = pyqtSignal(str)
 
@@ -361,4 +360,3 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     multi_install = MultiInstall()
     sys.exit(app.exec_())
-
