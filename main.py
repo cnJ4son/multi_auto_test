@@ -184,8 +184,8 @@ class MultiInstall(QWidget, Ui_Form):
         selected_devices = {}
         for index in selected_indices:
             # 获取设备ID，角色使用Qt.DisplayRole
-            device_id = self.model.data(self.model.index(index.row(), 0), Qt.DisplayRole)
-            device_name = self.model.data(self.model.index(index.row(), 1), Qt.DisplayRole)
+            device_id = self.devices_model.data(self.devices_model.index(index.row(), 0), Qt.DisplayRole)
+            device_name = self.devices_model.data(self.devices_model.index(index.row(), 1), Qt.DisplayRole)
             selected_devices[device_id] = device_name
         return selected_devices
 
