@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
-    <height>577</height>
+    <width>1049</width>
+    <height>790</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -25,47 +25,101 @@
     </widget>
    </item>
    <item>
-    <widget class="QTableView" name="tableView">
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
+    <widget class="QPushButton" name="showallBtn">
+     <property name="text">
+      <string>一键刷新</string>
      </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="defaultDropAction">
-      <enum>Qt::IgnoreAction</enum>
-     </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideMiddle</enum>
-     </property>
-     <attribute name="horizontalHeaderMinimumSectionSize">
-      <number>100</number>
-     </attribute>
-     <attribute name="horizontalHeaderDefaultSectionSize">
-      <number>203</number>
-     </attribute>
-     <attribute name="horizontalHeaderStretchLastSection">
-      <bool>false</bool>
-     </attribute>
-     <attribute name="verticalHeaderStretchLastSection">
-      <bool>false</bool>
-     </attribute>
     </widget>
    </item>
    <item>
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>apk文件选择：</string>
-     </property>
+    <widget class="QWidget" name="widget_9" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout_5">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="widget_8" native="true">
+        <layout class="QHBoxLayout" name="horizontalLayout_7">
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>设备列表</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="showDevicesBtn">
+           <property name="text">
+            <string>刷新设备</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableView">
+        <property name="layoutDirection">
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="defaultDropAction">
+         <enum>Qt::IgnoreAction</enum>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="textElideMode">
+         <enum>Qt::ElideMiddle</enum>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>100</number>
+        </attribute>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>203</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
@@ -89,20 +143,175 @@
       <property name="bottomMargin">
        <number>0</number>
       </property>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="action" native="true">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>180</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QWidget" name="widget_3" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
-       <widget class="QListView" name="apkList"/>
+       <widget class="QWidget" name="widget_4" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>apk列表</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListView" name="apkList"/>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget_6" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QPushButton" name="apkfreshBtn">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string>加载apk文件</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="installSelectBtn">
+              <property name="text">
+               <string>安装到选中设备</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="installAllBtn">
+              <property name="text">
+               <string>安装到所有设备</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="apkfreshBtn">
-        <property name="minimumSize">
-         <size>
-          <width>0</width>
-          <height>150</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>刷新apk</string>
-        </property>
+       <widget class="QWidget" name="widget_5" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>脚本列表</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListView" name="airtestscipstlistView">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::MultiSelection</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget_7" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QPushButton" name="freshscripts">
+              <property name="text">
+               <string>加载自动化脚本</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="runselectscrBtn">
+              <property name="text">
+               <string>执行选中脚本</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="runallscrBtn">
+              <property name="text">
+               <string>执行全部脚本</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -116,13 +325,13 @@
      <property name="minimumSize">
       <size>
        <width>0</width>
-       <height>23</height>
+       <height>0</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>23</height>
+       <height>30</height>
       </size>
      </property>
      <property name="autoFillBackground">
@@ -152,7 +361,7 @@
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>23</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="verticalScrollBarPolicy">
@@ -179,8 +388,8 @@
        <widget class="QPushButton" name="openFileBtn">
         <property name="maximumSize">
          <size>
-          <width>86</width>
-          <height>23</height>
+          <width>16777215</width>
+          <height>16777215</height>
          </size>
         </property>
         <property name="text">
@@ -192,80 +401,15 @@
     </widget>
    </item>
    <item>
-    <widget class="QWidget" name="action" native="true">
+    <widget class="QPlainTextEdit" name="output">
      <property name="maximumSize">
       <size>
        <width>16777215</width>
        <height>180</height>
       </size>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QWidget" name="widget" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QPushButton" name="showDevicesBtn">
-           <property name="text">
-            <string>刷新设备</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="installSelectBtn">
-           <property name="text">
-            <string>安装到选中设备</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="installAllBtn">
-           <property name="text">
-            <string>安装到所有设备</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPlainTextEdit" name="output">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>180</height>
-         </size>
-        </property>
-        <property name="readOnly">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>选择自动华脚本：</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QListView" name="airtestscipstlistView">
-     <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -273,27 +417,6 @@
     <widget class="QPushButton" name="dialogBtn">
      <property name="text">
       <string>PushButton</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="freshscripts">
-     <property name="text">
-      <string>加载自动化脚本</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="runselectscrBtn">
-     <property name="text">
-      <string>执行选中脚本</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QPushButton" name="runallscrBtn">
-     <property name="text">
-      <string>执行全部脚本</string>
      </property>
     </widget>
    </item>

@@ -25,27 +25,33 @@ class MultiInstall(QWidget, Ui_Form):
         super().__init__()
         self.install_thread = None
         self.setupUi(self)
-        self.init_table()
+        self.init_model()
         self.showDevicesBtn.clicked.connect(self.show_devices)
         self.installSelectBtn.clicked.connect(self.select_install)
         self.installAllBtn.clicked.connect(self.all_install)
         self.openFileBtn.clicked.connect(self.open_file_dialog)
-        self.apkfreshBtn.clicked.connect(self.fresh_apk)
+        self.apkfreshBtn.clicked.connect(self.show_apk)
         self.dialogBtn.clicked.connect(self.show_dialog)
-        self.freshscripts.clicked.connect(self.update_airtestscripst)
+        self.freshscripts.clicked.connect(self.show_airtestscripst)
         self.runselectscrBtn.clicked.connect(self.run_selectscr)
+        self.showallBtn.clicked.connect(self.show_all)
 
         self.show()
 
         self.apk = ''
         self.devices_info = {}
 
+    def show_all(self):
+        self.show_devices()
+        self.show_apk()
+        self.show_airtestscripst()
+
     def show_dialog(self):
         self.dialog_window = MyDialog(self)
         self.dialog_window.show()
         self.test()
 
-    def fresh_apk(self):
+    def show_apk(self):
         print('freshapk')
         # 假设当前脚本位于项目根目录下
         # 获取当前脚本的目录（项目根目录）
@@ -66,6 +72,8 @@ class MultiInstall(QWidget, Ui_Form):
         model.setStringList(apk_files)
         self.apkList.setModel(model)
 
+        self.output.appendPlainText("获取apk成功！共获取到 {} 个apk！".format(len(apk_files)))
+
     def open_file_dialog(self):
         options = QFileDialog.Options()
         fileName, _ = QFileDialog.getOpenFileName(self, "选择文件", "", "All Files (*);;Text Files (*.txt)",
@@ -74,10 +82,10 @@ class MultiInstall(QWidget, Ui_Form):
             self.filePath.setPlainText(fileName)
             self.apk = fileName
 
-    def init_table(self):
-        self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["device_id", "device_name"])
-        self.tableView.setModel(self.model)
+    def init_model(self):
+        self.devices_model = QStandardItemModel()
+        self.devices_model.setHorizontalHeaderLabels(["device_id", "device_name"])
+        self.tableView.setModel(self.devices_model)
         self.airtestmodel= QStandardItemModel()
         self.airtestscipstlistView.setModel(self.airtestmodel)
 
@@ -104,7 +112,7 @@ class MultiInstall(QWidget, Ui_Form):
                 self.filePath.setPlainText(file_path)
 
     def show_devices(self):
-        self.init_table()
+        self.init_model()
         # self.output.clear()
         self.get_devices_info()
         if self.devices_info:
@@ -118,7 +126,7 @@ class MultiInstall(QWidget, Ui_Form):
             id_model.setTextAlignment(Qt.AlignCenter)
             name_model = QStandardItem(device_name)
             name_model.setTextAlignment(Qt.AlignCenter)
-            self.model.appendRow([id_model, name_model])
+            self.devices_model.appendRow([id_model, name_model])
 
     def get_devices_info(self):
         # 清空设备信息
@@ -129,7 +137,7 @@ class MultiInstall(QWidget, Ui_Form):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            creationflags=subprocess.CREATE_NO_WINDOW
+            # creationflags=subprocess.CREATE_NO_WINDOW
         )
         stdout, stderr = result.communicate()
         # 检查是否有错误输出
@@ -206,10 +214,11 @@ class MultiInstall(QWidget, Ui_Form):
         self.output.appendPlainText(text)
 
     # 刷新自动化脚本
-    def update_airtestscripst(self):
+    def show_airtestscripst(self):
         # 假设scripts文件夹位于项目根目录下
         scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
-        for item in os.listdir(scripts_dir):
+        scripts_list = os.listdir(scripts_dir)
+        for item in scripts_list:
             # 构建完整路径
             item_path = os.path.join(scripts_dir, item)
             # 检查是否为文件夹且名称以.air结尾
@@ -218,6 +227,9 @@ class MultiInstall(QWidget, Ui_Form):
                 folder_item = QStandardItem(item)
                 self.airtestmodel.appendRow(folder_item)
         self.airtestscipstlistView.setModel(self.airtestmodel)
+
+        self.output.appendPlainText("获取脚本成功！共获取到 {} 个脚本！".format(len(scripts_list)))
+
     #选择自动化脚本
     def selected_airtestscripts(self):
 
