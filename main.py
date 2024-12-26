@@ -33,7 +33,7 @@ class MultiInstall(QWidget, Ui_Form):
         self.apkfreshBtn.clicked.connect(self.show_apk)
         self.dialogBtn.clicked.connect(self.show_dialog)
         self.freshscripts.clicked.connect(self.show_airtestscripst)
-        self.runselectscrBtn.clicked.connect(self.run_selectscr)
+        self.runselectscrBtn.clicked.connect(self.run_select_scripts)
         self.showallBtn.clicked.connect(self.show_all)
 
         self.show()
@@ -231,7 +231,6 @@ class MultiInstall(QWidget, Ui_Form):
 
     # 选择自动化脚本
     def selected_airtestscripts(self):
-
         # 获取选择的设备id
         selected_indices = self.airtestscipstlistView.selectionModel().selectedRows()  # 获取选中的行索引
         if not selected_indices:
@@ -252,61 +251,91 @@ class MultiInstall(QWidget, Ui_Form):
     #
     #         item_path = os.path.join(scripts_dir, item)
 
-    def run_airtest_script(self, script_path, device):
-        """
-        运行Airtest脚本
-
-        :param script_path: Airtest脚本的路径
-        :param device: 目标设备的标识符
-        """
-        try:
-            # 构建命令行指令
-            command = [
-                'airtest', 'run',
-                script_path,
-                '--device', device
-            ]
-
-            # 执行命令行指令
-            result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-            # 输出命令行的标准输出和标准错误（如果有的话）
-            print("Standard Output:")
-            print(result.stdout)
-
-            if result.stderr:
-                print("Standard Error:")
-                print(result.stderr)
-
-            print("Airtest script executed successfully.")
-
-        except subprocess.CalledProcessError as e:
-            # 如果命令行指令返回非零退出码，将引发此异常
-            print(f"An error occurred while executing the Airtest script: {e}")
-            print(f"Standard Error: {e.stderr}")
+    # def run_airtest_script(self, script_path, device): # 在线程类中有同样方法，弃用
+    #     """
+    #     运行Airtest脚本
+    #
+    #     :param script_path: Airtest脚本的路径
+    #     :param device: 目标设备的标识符
+    #     """
+    #     try:
+    #         # 构建命令行指令
+    #         command = [
+    #             'airtest', 'run',
+    #             script_path,
+    #             '--device', device
+    #         ]
+    #
+    #         # 执行命令行指令
+    #         result = subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    #
+    #         # 输出命令行的标准输出和标准错误（如果有的话）
+    #         print("Standard Output:")
+    #         print(result.stdout)
+    #
+    #         if result.stderr:
+    #             print("Standard Error:")
+    #             print(result.stderr)
+    #
+    #         print("Airtest script executed successfully.")
+    #
+    #     except subprocess.CalledProcessError as e:
+    #         # 如果命令行指令返回非零退出码，将引发此异常
+    #         print(f"An error occurred while executing the Airtest script: {e}")
+    #         print(f"Standard Error: {e.stderr}")
 
     # 执行选中脚本
-    def run_selectscr(self):
+    # def run_selectscr(self):  # 用下面的线程池方法，该方法弃用
+    #     templist = self.selected_airtestscripts()
+    #     scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
+    #     select_devices = self.selected_devices()
+    #
+    #     device_path_list = []
+    #
+    #     if select_devices:
+    #         for device in select_devices.keys():
+    #             device_path = f'Android://127.0.0.1:5037/{device}'
+    #             device_path_list.append(device_path)
+    #     else:
+    #         device_path = 'Android:///'
+    #         device_path_list.append(device_path)
+    #     if templist:
+    #         for item in templist:
+    #             for device in device_path_list:
+    #                 item_path = os.path.join(scripts_dir, item)
+    #                 self.run_airtest_script(item_path, device)
+    #     else:
+    #         QMessageBox.warning(self, "警告", "没有选择脚本！")
+
+    def run_select_scripts(self):
         templist = self.selected_airtestscripts()
         scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
         select_devices = self.selected_devices()
 
-        device_path_list = []
+        if not select_devices:
+            QMessageBox.warning(self, "警告", "没有选择设备！")
+            return
 
-        if select_devices:
-            for device in select_devices.keys():
-                device_path = f'Android://127.0.0.1:5037/{device}'
-                device_path_list.append(device_path)
-        else:
-            device_path = 'Android:///'
-            device_path_list.append(device_path)
-        if templist:
-            for item in templist:
-                for device in device_path_list:
-                    item_path = os.path.join(scripts_dir, item)
-                    self.run_airtest_script(item_path, device)
-        else:
+        if not templist:
             QMessageBox.warning(self, "警告", "没有选择脚本！")
+            return
+
+        device_path_list = [
+            f'Android://127.0.0.1:5037/{device}' if select_devices else 'Android///'
+            for device in select_devices.keys()
+        ]
+
+        # 使用线程池来管理每个设备的脚本任务
+        with ThreadPoolExecutor(max_workers=len(device_path_list)) as executor:
+            for device_path in device_path_list:
+                script_paths = [os.path.join(scripts_dir, script) for script in templist]
+                # 为每个设备启动一个线程
+                thread = RunScriptThread(device_path, script_paths)
+                thread.update_text.connect(self.update_plaintext)  # 连接信号用于更新UI
+                thread.start()
+
+    def run_all_scripts(self):
+        pass
 
 
 class InstallThread(QThread):
@@ -347,7 +376,7 @@ class InstallThread(QThread):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                creationflags=subprocess.CREATE_NO_WINDOW
+                # creationflags=subprocess.CREATE_NO_WINDOW
             )
             # 等待进程完成
             stdout, stderr = process.communicate()
@@ -355,6 +384,42 @@ class InstallThread(QThread):
         except Exception as e:
             return {'success': False, 'stderr': str(e)}
 
+
+class RunScriptThread(QThread):
+    update_text = pyqtSignal(str)
+
+    def __init__(self, device_path, script_paths, parent=None):
+        super(RunScriptThread, self).__init__(parent)
+        self.device_path = device_path
+        self.script_paths = script_paths
+
+    def run(self):
+        """在设备上执行所有脚本"""
+        try:
+            for script in self.script_paths:
+                self.update_text.emit(f"{self.device_path} 开始运行脚本 {script}")
+                result = self.run_airtest_script(self.device_path, script)
+                if result['success']:
+                    self.update_text.emit(f"{self.device_path} 脚本 {script} 执行成功")
+                else:
+                    self.update_text.emit(f"{self.device_path} 脚本 {script} 执行失败: \n{result['stderr']}")
+        except Exception as e:
+            self.update_text.emit(f"在 {self.device_path} 执行时发生错误: {str(e)}")
+
+    def run_airtest_script(self, device_path, script_path):
+        """运行 Airtest 脚本"""
+        try:
+            process = subprocess.Popen(
+                ['airtest', 'run', script_path, '--device', device_path],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                # creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            stdout, stderr = process.communicate()
+            return {'success': process.returncode == 0, 'stdout': stdout, 'stderr': stderr}
+        except Exception as e:
+            return {'success': False, 'stderr': str(e)}
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
