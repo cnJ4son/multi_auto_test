@@ -307,36 +307,81 @@ class MultiInstall(QWidget, Ui_Form):
     #     else:
     #         QMessageBox.warning(self, "警告", "没有选择脚本！")
 
-    def run_select_scripts(self):
-        templist = self.selected_airtestscripts()
+    def start_run_scripts(self, device_path_list, script_paths):
+        if device_path_list and script_paths:
+            # 使用线程池来管理每个设备的脚本任务
+            with ThreadPoolExecutor(max_workers=len(device_path_list)) as executor:
+                for device_path in device_path_list:
+                    # 为每个设备启动一个线程
+                    thread = RunScriptThread(device_path, script_paths)
+                    thread.update_text.connect(self.update_plaintext)  # 连接信号用于更新UI
+                    thread.start()
+
+    def get_select_script_paths(self):
         scripts_dir = os.path.join(os.path.dirname(__file__), 'scripts')
-        select_devices = self.selected_devices()
+        selected_airtestscripts = self.selected_airtestscripts()
 
-        if not select_devices:
-            QMessageBox.warning(self, "警告", "没有选择设备！")
-            return
-
-        if not templist:
+        if selected_airtestscripts:
+            script_paths = [os.path.join(scripts_dir, script) for script in selected_airtestscripts]
+            return script_paths
+        else:
             QMessageBox.warning(self, "警告", "没有选择脚本！")
             return
 
+    def run_select_scripts(self):
+        # 重新获取一次所有连接的设备并展示
+        self.show_devices()
+
+        # 判断是否有连接设备，如果没有直接return
+        if not self.devices_info:
+            QMessageBox.warning(self, "警告", "没有连接设备！")
+            return
+
+        # 获取所有选择脚本的列表
+        script_paths = self.get_select_script_paths()
+
+        if not script_paths:
+            return
+
+        # 获取所有选择设备的列表
+        selected_devices = self.selected_devices()
+
         device_path_list = [
-            f'Android://127.0.0.1:5037/{device}' if select_devices else 'Android///'
-            for device in select_devices.keys()
+            f'Android://127.0.0.1:5037/{device}' if selected_devices else 'Android///'
+            for device in selected_devices.keys()
         ]
 
+        self.start_run_scripts(device_path_list, script_paths)
+
         # 使用线程池来管理每个设备的脚本任务
-        with ThreadPoolExecutor(max_workers=len(device_path_list)) as executor:
-            for device_path in device_path_list:
-                script_paths = [os.path.join(scripts_dir, script) for script in templist]
-                # 为每个设备启动一个线程
-                thread = RunScriptThread(device_path, script_paths)
-                thread.update_text.connect(self.update_plaintext)  # 连接信号用于更新UI
-                thread.start()
+        # with ThreadPoolExecutor(max_workers=len(device_path_list)) as executor:
+        #     for device_path in device_path_list:
+        #         # script_paths = [os.path.join(scripts_dir, script) for script in templist]
+        #         # 为每个设备启动一个线程
+        #         thread = RunScriptThread(device_path, script_paths)
+        #         thread.update_text.connect(self.update_plaintext)  # 连接信号用于更新UI
+        #         thread.start()
 
     def run_all_scripts(self):
-        pass
+        # 重新获取一次所有连接的设备并展示
+        self.show_devices()
 
+        # 判断是否有连接设备，如果没有直接return
+        if not self.devices_info:
+            QMessageBox.warning(self, "警告", "没有连接设备！")
+            return
+
+        # 获取所有选择脚本的列表
+        script_paths = self.get_select_script_paths()
+
+        if not script_paths:
+            return
+
+        device_path_list = [
+            f'Android://127.0.0.1:5037/{device}' for device in self.devices_info.keys()
+        ]
+
+        self.start_run_scripts(device_path_list, script_paths)
 
 class InstallThread(QThread):
     update_text = pyqtSignal(str)
