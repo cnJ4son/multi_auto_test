@@ -4,6 +4,8 @@ import subprocess
 import sys
 import threading
 
+import scripts_manager
+
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QStringListModel, QDir
 from PyQt5.QtGui import QStandardItemModel, QStandardItem, QDragEnterEvent, QDropEvent
 from PyQt5.QtWidgets import QApplication, QMessageBox, QWidget, QFileDialog, QDialog, QVBoxLayout, QPlainTextEdit, \
@@ -34,6 +36,7 @@ class MultiInstall(QWidget, Ui_Form):
         self.dialogBtn.clicked.connect(self.show_dialog)
         self.freshscripts.clicked.connect(self.show_airtestscripst)
         self.runselectscrBtn.clicked.connect(self.run_select_scripts)
+        self.runallscrBtn.clicked.connect(self.run_all_scripts)
         self.showallBtn.clicked.connect(self.show_all)
 
         self.show()
@@ -330,7 +333,7 @@ class MultiInstall(QWidget, Ui_Form):
 
     def run_select_scripts(self):
         # 重新获取一次所有连接的设备并展示
-        self.show_devices()
+        # self.show_devices()
 
         # 判断是否有连接设备，如果没有直接return
         if not self.devices_info:
@@ -346,12 +349,27 @@ class MultiInstall(QWidget, Ui_Form):
         # 获取所有选择设备的列表
         selected_devices = self.selected_devices()
 
-        device_path_list = [
-            f'Android://127.0.0.1:5037/{device}' if selected_devices else 'Android///'
-            for device in selected_devices.keys()
-        ]
+        device_path_list = []
+        if selected_devices:
+            for device in selected_devices.keys():
+                    device_path = f'Android://127.0.0.1:5037/{device}'
+                    device_class =scripts_manager.Device(device_path)
+                    device_path_list.append(device_class)
+        else:
+            device_path = 'Android///'
+            device_class = scripts_manager.Device(device_path)
+            device_path_list.append(device_class)
 
-        self.start_run_scripts(device_path_list, script_paths)
+        # self.start_run_scripts(device_path_list, script_paths)
+        device_manager = scripts_manager.DeviceManager(device_path_list)
+        device_manager.start()
+        for script_path in script_paths:
+            device_manager.add_task(script_path)
+        device_manager.task_queue.join()
+        print("test.")
+
+
+
 
         # 使用线程池来管理每个设备的脚本任务
         # with ThreadPoolExecutor(max_workers=len(device_path_list)) as executor:
